@@ -1055,19 +1055,10 @@ le_result_t le_sim_GetIMSI
         return LE_BAD_PARAMETER;
     }
 
-    if ((LE_OK == SelectSIMCard(simPtr->simId)) &&
-        (LE_OK == pa_sim_GetState(&state)) &&
-        (LE_SIM_READY == state)
-       )
+    if (LE_OK == SelectSIMCard(simPtr->simId))
     {
         // Get identification information
         res = GetIMSI(simPtr);
-    }
-    else
-    {
-        LE_ERROR("Failed to get the IMSI of sim identifier.%d", simPtr->simId);
-        simPtr->IMSI[0] = '\0';
-        return LE_FAULT;
     }
 
     // The IMSI is available. Copy it to the result buffer.
@@ -1839,7 +1830,7 @@ le_result_t le_sim_LocalSwapToEmergencyCallSubscription
     }
     simPtr = &SimList[simId];
 
-    //Clear sim information.
+    // Clear sim information.
     simPtr->ICCID[0] = '\0';
     simPtr->IMSI[0] = '\0';
     simPtr->phoneNumber[0] = '\0';
@@ -1895,7 +1886,7 @@ le_result_t le_sim_LocalSwapToCommercialSubscription
     }
     simPtr = &SimList[simId];
 
-    //Clear sim information (do not clear EID).
+    // Clear sim information (do not clear EID).
     simPtr->ICCID[0] = '\0';
     simPtr->IMSI[0] = '\0';
     simPtr->phoneNumber[0] = '\0';
