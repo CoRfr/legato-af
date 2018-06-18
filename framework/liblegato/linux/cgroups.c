@@ -139,7 +139,7 @@ static void MountSubSys
 
         LE_ASSERT(le_dir_Make(dir, S_IRWXU) != LE_FAULT);
 
-        LE_FATAL_IF(mount(SubSysName[subSys], dir, "cgroup", 0, SubSysName[subSys]) != 0,
+        LE_ERROR_IF(mount(SubSysName[subSys], dir, "cgroup", 0, SubSysName[subSys]) != 0,
                     "Could not mount cgroup subsystem '%s'.  %m.", SubSysName[subSys]);
 
         LE_INFO("Mounted cgroup hierarchy for subsystem '%s'.", SubSysName[subSys]);
@@ -873,7 +873,8 @@ le_result_t cgrp_mem_SetLimit
     // Write the limit to the file.
     if (WriteToFile(CGRP_SUBSYS_MEM, cgroupNamePtr, MEM_LIMIT_FILENAME, limitStr) != LE_OK)
     {
-        return LE_FAULT;
+        LE_CRIT("Unable to write memory limit '%s' to '%s'.", limitStr, cgroupNameStr);
+        return LE_OK;
     }
 
     // Read the limit to see if it was set properly.
@@ -885,7 +886,8 @@ le_result_t cgrp_mem_SetLimit
                  readLimitStr,
                  sizeof(readLimitStr)) != LE_OK)
     {
-        return LE_FAULT;
+        LE_CRIT("Unable to read memory limit from '%s'.", cgroupNameStr);
+        return LE_OK;
     }
 
     if (strcmp(limitStr, readLimitStr) != 0)
